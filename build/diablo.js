@@ -40,7 +40,7 @@ var TurdState = (function (_super) {
     function TurdState() {
         var _this = _super.call(this) || this;
         _this.stars = [];
-        _this.fov = 800;
+        _this.fov = 1000;
         return _this;
     }
     TurdState.prototype.random = function (min, max) {
@@ -48,9 +48,8 @@ var TurdState = (function (_super) {
     };
     TurdState.prototype.init = function () {
         for (var i = 0; i < 10000; i++) {
-            this.stars.push({ point: new Point3d(this.random(-800, 800), this.random(-600, 600), this.random(-100000, 100000)), size: this.random(1, 2) });
+            this.stars.push({ point: new Point3d(this.random(-250, 250), this.random(-60, 60), this.random(-1000, 1000)), size: 1 });
         }
-        console.log(this.stars);
     };
     TurdState.prototype.render = function (r) {
         var i = this.stars.length;

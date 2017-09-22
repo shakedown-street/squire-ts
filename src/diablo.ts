@@ -49,7 +49,7 @@ abstract class State {
 class TurdState extends State {
 
   public stars: Star[] = [];
-  public fov: number = 800;
+  public fov: number = 1000;
 
   constructor() {
     super();
@@ -61,9 +61,8 @@ class TurdState extends State {
 
   public init() {
     for (let i = 0; i < 10000; i++) {
-      this.stars.push({point: new Point3d(this.random(-800, 800), this.random(-600, 600), this.random(-100000, 100000)), size: this.random(1, 2)});
+      this.stars.push({point: new Point3d(this.random(-250, 250), this.random(-60, 60), this.random(-1000, 1000)), size: 1});
     }
-    console.log(this.stars);
   }
 
   public render(r: Renderer) {
@@ -75,7 +74,6 @@ class TurdState extends State {
       let y2d = star.point.y * scale + diablo.size.h / 2;
       if (x2d >= 0 && x2d <= diablo.size.w && y2d >= 0 && y2d <= diablo.size.h) {
         r.circle('white', x2d, y2d, 1);
-        // r.circle('white', x2d, y2d, star.size);
         star.point.z -= 1;
         if (star.point.z < -this.fov) star.point.z += 2 * this.fov;
       }
