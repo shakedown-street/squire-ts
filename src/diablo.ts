@@ -1,58 +1,92 @@
-class Diablo {
+import {
+  Renderer,
+  State,
+  StateManager,
+  SquireGame,
+  Point2d,
+  Dimension2d
+} from './squire';
 
-  public canvas: any;
-  public ctx: any;
-  public size: any;
-  public center: any;
-  public renderer: Renderer;
-  public stateManager: StateManager;
+import {
+  Entity,
+  Hero,
+  Skeleton,
+} from './';
 
-  constructor() {
-    this.canvas = document.getElementById('game');
-    this.ctx = this.canvas.getContext('2d');
-    this.size = new Dimension2d(this.canvas.width, this.canvas.height);
-    this.center = new Point2d(this.size.w / 2, this.size.h / 2);
-    this.renderer = new Renderer(this.ctx);
-    this.stateManager = new StateManager();
-    this.stateManager.state = new TurdState();
-  }
+class Diablo extends SquireGame {
 
-  public run(): void {
-    requestAnimationFrame(() => {
-      this.run();
-    });
-    this.renderer.clear('black', 0, 0, this.size.w, this.size.h);
-    this.stateManager.update();
-    this.stateManager.render(this.renderer);
-  }
-}
-
-interface Star {
-
-  point: Point3d;
-  size: number;
-
-}
-
-abstract class State {
-
-  public abstract init(): void;
-
-  public abstract render(r: Renderer): void;
-
-  public abstract update(): void;
-
-  public abstract end(): void;
-
-}
-
-class TurdState extends State {
-
-  public stars: Star[] = [];
-  public fov: number = 1000;
+  public chatboxLines: any[] = [];
+  private frameState: FrameState;
+  private gameState: GameState;
 
   constructor() {
-    super();
+    super('diablo');
+    this.frameState = new FrameState(this);
+    this.gameState = new GameState(this);
+    this.stateManager.add(this.frameState);
+    this.stateManager.add(this.gameState);
+  }
+}
+
+class FrameState extends State {
+
+  constructor(gameCtx: any) {
+    super(gameCtx, 'frame-state', 1);
+  }
+
+  public init() {
+
+  }
+
+  public render(r: Renderer) {
+    // Render map
+    let mapPoint = new Point2d(this.gameCtx.size.w - 256, 0);
+    let mapDimension = new Dimension2d(256, 200);
+    r.rect('green', mapPoint.x, mapPoint.y, mapDimension.w, mapDimension.h);
+    r.text('Minimap', mapPoint.x + 10, mapPoint.y + 20);
+    r.hr(mapPoint.x, mapPoint.y + 30, mapDimension.w, 'black', 1);
+
+    // Render inventory
+    let inventoryPoint = new Point2d(this.gameCtx.size.w - 256, 200);
+    let inventoryDimension = new Dimension2d(256, this.gameCtx.size.h - mapDimension.h);
+    r.rect('pink', inventoryPoint.x, inventoryPoint.y, inventoryDimension.w, inventoryDimension.h);
+    r.text('Inventory', inventoryPoint.x + 10, inventoryPoint.y + 20);
+    r.hr(inventoryPoint.x, inventoryPoint.y + 30, inventoryDimension.w, 'black', 1);
+
+    // Render chatbox
+    let chatboxPoint = new Point2d(0, this.gameCtx.size.h - 200);
+    let chatboxDimension = new Dimension2d(this.gameCtx.size.w - inventoryDimension.w, 200);
+    r.rect('lightblue', chatboxPoint.x, chatboxPoint.y, chatboxDimension.w, chatboxDimension.h);
+    r.text('Chatbox', chatboxPoint.x + 10, chatboxPoint.y + 20);
+    r.hr(chatboxPoint.x, chatboxPoint.y + 30, chatboxDimension.w, 'black', 1);
+    for (let i = 0; i < 8; i++) {
+      let line = this.gameCtx.chatboxLines[this.gameCtx.chatboxLines.length - i - 1];
+      if (!line) {
+        return;
+      }
+      r.text(line.message, chatboxPoint.x + 10, (this.gameCtx.size.h - 10) - (20 * i), line.color);
+    }
+  }
+
+  public update(dt: number) {
+
+  }
+
+  public end() {
+
+  }
+
+}
+
+class GameState extends State {
+
+  private skeleton: Skeleton;
+  private hero: Hero;
+
+  constructor(gameCtx: any) {
+    super(gameCtx, 'game-state', 2);
+    this.skeleton = new Skeleton(new Point2d(180, 180));
+    this.hero = new Hero(new Point2d(300, 300));
   }
 
   private random(min: number, max: number) {
@@ -60,27 +94,48 @@ class TurdState extends State {
   }
 
   public init() {
-    for (let i = 0; i < 10000; i++) {
-      this.stars.push({point: new Point3d(this.random(-250, 250), this.random(-60, 60), this.random(-1000, 1000)), size: 1});
-    }
+    this.gameCtx.chatboxLines.push(
+      {
+        'color': 'black',
+        'message': 'Welcome to Diablo'
+      },
+      {
+        'color': 'red',
+        'message': '111111111111111111111'
+      },
+      {
+        'color': 'orange',
+        'message': '2222222222222222222222'
+      },
+      {
+        'color': 'yellow',
+        'message': '3333333333333333333'
+      },
+      {
+        'color': 'green',
+        'message': '44444444444444444444444'
+      },
+      {
+        'color': 'blue',
+        'message': '55555555555555555555555555'
+      },
+      {
+        'color': 'indigo',
+        'message': '666666666666666666666666666'
+      },
+      {
+        'color': 'violet',
+        'message': '77777777777777777777777777777777'
+      },
+    );
   }
 
   public render(r: Renderer) {
-    let i = this.stars.length;
-    while(i--) {
-      let star = this.stars[i];
-      let scale = this.fov / (this.fov + star.point.z);
-      let x2d = star.point.x * scale + diablo.size.w / 2;
-      let y2d = star.point.y * scale + diablo.size.h / 2;
-      if (x2d >= 0 && x2d <= diablo.size.w && y2d >= 0 && y2d <= diablo.size.h) {
-        r.circle('white', x2d, y2d, 1);
-        star.point.z -= 1;
-        if (star.point.z < -this.fov) star.point.z += 2 * this.fov;
-      }
-    }
+    this.hero.render(r);
+    this.skeleton.render(r);
   }
 
-  public update() {
+  public update(dt: number) {
 
   }
 
@@ -89,86 +144,7 @@ class TurdState extends State {
   }
 }
 
-class StateManager {
-
-  private _state: State;
-
-  get state() {
-    return this._state;
-  }
-
-  set state(value: State) {
-    this._state = value;
-    this._state.init();
-  }
-
-  constructor() { }
-
-  public update(): void {
-    if (!this.stateIsValid()) { return; }
-    try {
-      this._state.update();
-    } catch(e) {
-      console.warn(e);
-    }
-  }
-
-  public render(r: Renderer): void {
-    if (!this.stateIsValid()) { return; }
-    try {
-      this._state.render(r);
-    } catch(e) {
-      console.warn(e);
-    }
-  }
-
-  public stateIsValid(): boolean {
-    return !(this._state === undefined || this._state === null);
-  }
-
-}
-
-class Renderer {
-
-  constructor(public ctx: any) {
-
-  }
-
-  public clear(color: string, x: number, y: number, w: number, h: number) {
-    this.ctx.fillStyle = color;
-    this.ctx.fillRect(x, y, w, h);
-  }
-
-  public circle(color: string, x: number, y: number, radius: number) {
-    this.ctx.beginPath();
-    this.ctx.fillStyle = color;
-    this.ctx.arc(x, y, radius, 0, 2 * Math.PI);
-    this.ctx.fill();
-  }
-}
-
-class Dimension2d {
-
-  constructor(public w: number, public h: number) {
-
-  }
-}
-
-class Point2d {
-
-  constructor(public x: number, public y: number) {
-
-  }
-}
-
-class Point3d {
-
-  constructor(public x: number, public y: number, public z: number) {
-
-  }
-}
-
-const diablo = new Diablo();
 window.onload = () => {
+  let diablo = new Diablo();
   diablo.run();
 }
