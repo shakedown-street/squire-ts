@@ -2,7 +2,7 @@ import { Renderer, SquireGame } from './';
 
 export abstract class State {
 
-  private _active: boolean;
+  private _active = true;
 
   get active() {
     return this._active;

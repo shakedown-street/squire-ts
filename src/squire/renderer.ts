@@ -1,8 +1,6 @@
 export class Renderer {
 
-  constructor(public ctx: any) {
-
-  }
+  constructor(public ctx: any) {}
 
   public clear(x: number, y: number, w: number, h: number) {
     this.ctx.clearRect(x, y, w, h);

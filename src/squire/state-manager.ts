@@ -25,7 +25,9 @@ export class StateManager {
   public update(dt: number): void {
     try {
       this.eachState((state) => {
-        state.update(dt);
+        if (state.active) {
+          state.update(dt);
+        }
       });
     } catch(e) {
       console.warn(e);
@@ -35,7 +37,9 @@ export class StateManager {
   public render(r: Renderer): void {
     try {
       this.eachState((state) => {
-        state.render(r);
+        if (state.active) {
+          state.render(r);
+        }
       });
     } catch(e) {
       console.warn(e);
