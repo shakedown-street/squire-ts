@@ -1,5 +1,7 @@
 import {
+  Event,
   Dimension2d,
+  EventManager,
   Point2d,
   Renderer,
   StateManager,
@@ -10,10 +12,11 @@ export class SquireGame {
   public size: Dimension2d;
   public center: Point2d;
   public stateManager: StateManager;
-  private canvas: any;
+  // public eventManager: EventManager;
+  public canvas: any;
   private ctx: any;
   private renderer: Renderer;
-  private lastTickTime = Date.now()
+  private lastTickTime = Date.now();
 
   constructor(canvasId: string) {
     this.canvas = document.getElementById(canvasId);
@@ -22,6 +25,17 @@ export class SquireGame {
     this.center = new Point2d(this.size.w / 2, this.size.h / 2);
     this.renderer = new Renderer(this.ctx);
     this.stateManager = new StateManager();
+    // this.eventManager = new EventManager(this);
+    // this.canvas.addEventListener('click', (canvasEvent: any) => {
+    //   this.eventManager.forEachEvent(this.eventManager.clickEvents, (e: Event) => {
+    //     e.handleEvent(canvasEvent, this);
+    //   });
+    // }, false);
+    // this.canvas.addEventListener('mousemove', (canvasEvent: any) => {
+    //   this.eventManager.forEachEvent(this.eventManager.mouseEvents, (e: Event) => {
+    //     e.handleEvent(canvasEvent, this);
+    //   });
+    // }, false);
   }
 
   public run(): void {

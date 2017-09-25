@@ -1,10 +1,10 @@
 import {
+  Dimension2d,
+  Event,
+  Point2d,
   Renderer,
   State,
-  StateManager,
   SquireGame,
-  Point2d,
-  Dimension2d
 } from './squire';
 
 import {
@@ -13,7 +13,7 @@ import {
   Skeleton,
 } from './';
 
-class Diablo extends SquireGame {
+export class Diablo extends SquireGame {
 
   public chatboxLines: any[] = [];
   private frameState: FrameState;
@@ -23,7 +23,7 @@ class Diablo extends SquireGame {
     super('diablo');
     this.frameState = new FrameState(this);
     this.gameState = new GameState(this);
-    this.stateManager.add(this.frameState);
+    // this.stateManager.add(this.frameState);
     this.stateManager.add(this.gameState);
   }
 }
@@ -80,13 +80,28 @@ class FrameState extends State {
 
 class GameState extends State {
 
+  private mouse: Point2d;
   private skeleton: Skeleton;
   private hero: Hero;
 
   constructor(gameCtx: any) {
     super(gameCtx, 'game-state', 2);
     this.skeleton = new Skeleton(new Point2d(180, 180));
-    this.hero = new Hero(new Point2d(300, 300));
+    this.hero = new Hero(new Point2d(400, 150));
+    this.gameCtx.canvas.addEventListener('mousemove', (canvasEvent: any) => {
+      let offsetX, offsetY = 0;
+      let element = this.gameCtx.canvas;
+      offsetX = this.gameCtx.canvas.offsetLeft;
+      offsetY = this.gameCtx.canvas.offsetTop;
+
+      this.mouse = new Point2d(
+        canvasEvent.clientX - offsetX,
+        canvasEvent.clientY - offsetY
+      );
+      this.hero.checkDirection(this.mouse);
+      this.skeleton.direction = this.hero.direction;
+      console.log('direction', this.hero.direction);
+    }, false);
   }
 
   private random(min: number, max: number) {
@@ -131,12 +146,13 @@ class GameState extends State {
   }
 
   public render(r: Renderer) {
+    r.circle('black', this.mouse.x, this.mouse.y, 4);
     this.hero.render(r);
     this.skeleton.render(r);
   }
 
   public update(dt: number) {
-
+    this.hero.update(dt);
   }
 
   public end() {

@@ -37,4 +37,12 @@ export class Renderer {
     this.ctx.lineTo(x + w, y);
     this.ctx.stroke();
   }
+
+  public line(x1: number, y1: number, x2: number, y2: number,  color = 'black', lineWidth = 1) {
+    this.ctx.beginPath();
+    this.ctx.lineWidth = lineWidth;
+    this.ctx.moveTo(x1, y1);
+    this.ctx.lineTo(x2, y2);
+    this.ctx.stroke();
+  }
 }
