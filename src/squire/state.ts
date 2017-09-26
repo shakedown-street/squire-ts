@@ -1,6 +1,8 @@
-import { Renderer, SquireGame } from './';
+import { Event, EventManager, Renderer, SquireGame } from './';
 
 export abstract class State {
+
+  public eventManager: EventManager;
 
   private _active = true;
 
@@ -12,7 +14,19 @@ export abstract class State {
     this._active = value;
   }
 
-  constructor(public gameCtx: any, public name: string, public zIndex: number) {}
+  constructor(public gameCtx: any) {
+    this.eventManager = new EventManager(this);
+    gameCtx.canvas.addEventListener('click', (canvasEvent: any) => {
+      this.eventManager.forEachEvent(this.eventManager.clickEvents, (e: Event) => {
+        e.handleEvent(canvasEvent, this);
+      });
+    }, false);
+    gameCtx.canvas.addEventListener('mousemove', (canvasEvent: any) => {
+      this.eventManager.forEachEvent(this.eventManager.mouseEvents, (e: Event) => {
+        e.handleEvent(canvasEvent, this);
+      });
+    }, false);
+  }
 
   public abstract init(): void;
 

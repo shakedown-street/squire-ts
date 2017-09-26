@@ -6,7 +6,7 @@ export class EventManager {
   public clickEvents: Event[] = [];
   public mouseEvents: Event[] = [];
 
-  constructor(public gameCtx: any) {}
+  constructor(public stateCtx: any) {}
 
   public orderEvents(arr: Event[]) {
     return _sortBy(arr, 'zIndex');

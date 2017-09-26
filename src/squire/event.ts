@@ -5,5 +5,5 @@ export class Event {
   */
   constructor(public zIndex:number) {}
 
-  public handleEvent(event: any, gameCtx: any) {}
+  public handleEvent(event: any, stateCtx: any) {}
 }
