@@ -34,6 +34,7 @@ export class AnimationDef {
     let offset_x = frame[6];
     let offset_y = frame[7];
 
+    // r.rect('#00ff00', x - offset_x, y - offset_y, w, h);
     r.image(this.sheet, sheet_x, sheet_y, w, h, x - offset_x, y - offset_y, w, h);
   }
 }

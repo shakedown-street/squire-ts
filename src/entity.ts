@@ -1,5 +1,5 @@
 import { AnimationDef, Point2d, Renderer } from './squire';
-import { HeavyArmorSwordShield } from './';
+import { HeavyArmorSwordShield, BlackKnight } from './';
 
 export class Entity {
 
@@ -28,8 +28,16 @@ export class Entity {
     let needsNewFrame = now - this.lastFrameTime > animationDuration;
     if (needsNewFrame) {
       let frameCount = this.animation.animations[this.currentState].frames.length / 8;
-      this.frame = (this.frame + 1) % frameCount;
-      this.lastFrameTime = now;
+      if (this.frame + 1 === frameCount && this.currentState === 'die') {
+
+      } else  if (this.frame + 1 == frameCount && this.currentState == 'attack') {
+        this.switchAnim('idle');
+        this.frame = (this.frame + 1) % frameCount;
+        this.lastFrameTime = now;
+      } else {
+        this.frame = (this.frame + 1) % frameCount;
+        this.lastFrameTime = now;
+      }
     }
     this.animation.render(r, this.currentState, this.frame, this.direction, this.pos.x, this.pos.y);
   }
@@ -99,16 +107,13 @@ export class Hero extends Entity {
     }
   }
 
-  public update(dt: number) {
-    if (this.direction >= 0) {
-      // this.move(1, this.direction);
-    }
-  }
+  public update(dt: number) {}
 
   public render(r: Renderer) {
     super.render(r);
+    // r.circle('purple', this.pos.x, this.pos.y, 2);
     // for (let seg = 0; seg < 8; seg++) {
-    //   this.segmentDivider(r, seg, this.pos.x + 48, this.pos.y + 48, 160, (seg * 45) + 90);
+    //   this.segmentDivider(r, seg, this.pos.x, this.pos.y, 160, (seg * 45) + 90);
     // }
   }
 }
