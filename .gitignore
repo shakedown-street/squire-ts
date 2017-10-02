@@ -1,3 +1,4 @@
 node_modules
 build
 **/*.psd
+sprite_data
