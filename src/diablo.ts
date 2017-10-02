@@ -25,13 +25,6 @@ export class Diablo extends SquireGame {
   }
 }
 
-class AttackClickEvent extends Event {
-
-  public handleEvent(event: any, stateCtx: any) {
-    stateCtx.hero.switchAnim('attack');
-  }
-}
-
 class GameState extends State {
 
   private mouse: Point2d;
@@ -42,7 +35,6 @@ class GameState extends State {
   constructor(gameCtx: any) {
     super(gameCtx);
     this.hero = new Hero(new Point2d(400, 150));
-    this.eventManager.clickEvents.push(new AttackClickEvent(1));
     this.gameCtx.canvas.addEventListener('mousemove', (canvasEvent: any) => {
       let offsetX, offsetY = 0;
       let element = this.gameCtx.canvas;
@@ -136,18 +128,21 @@ class GameState extends State {
     //   }
     //   r.text(line.message, chatboxPoint.x + 10, (this.gameCtx.size.h - 10) - (20 * i), line.color);
     // }
-    r.image(this.frameSprite, 0, 0, 765, 503, 0, 0, 765, 503);
+
+
+
+    // r.image(this.frameSprite, 0, 0, 765, 503, 0, 0, 765, 503);
   }
 
   public wasd() {
-    let speed = 1;
+    let speed = 1.5;
     let down = this.keys.isDown(this.keys.DOWN);
     let up = this.keys.isDown(this.keys.UP);
     let right = this.keys.isDown(this.keys.RIGHT);
     let left = this.keys.isDown(this.keys.LEFT);
     let space = this.keys.isDown(this.keys.SPACE);
 
-    if (this.hero.currentState === 'attack') {
+    if (this.hero.currentState === 'attack' || this.hero.currentState === 'die' || this.hero.currentState === 'hit') {
       return;
     }
 
@@ -157,7 +152,7 @@ class GameState extends State {
     }
 
     if (down || up || right || left) {
-      this.hero.currentState = 'walk';
+      this.hero.switchAnim('walk');
     } else {
       this.hero.switchAnim('idle');
     }
@@ -186,9 +181,9 @@ class GameState extends State {
   }
 
   public render(r: Renderer) {
-    this.hero.render(r);
     this.renderUI(r);
-    r.circle('black', this.mouse.x, this.mouse.y, 4);
+    this.hero.render(r);
+    // r.circle('black', this.mouse.x, this.mouse.y, 4);
   }
 
   public update(dt: number) {

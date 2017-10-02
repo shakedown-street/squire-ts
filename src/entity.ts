@@ -9,11 +9,24 @@ export class Entity {
   private lastFrameTime = 0;
   private frame = 0;
 
-  constructor(public pos: Point2d) {
+  public maxHitpoints = 100;
+  public hitpoints = 100;
+  public damage = 10;
 
+  constructor(public pos: Point2d) {}
+
+  public update(dt: number) {
+    if (this.currentState === 'die') {
+      return;
+    }
+    if (Math.random() >= .99) {
+      this.hitpoints -= 10;
+      this.switchAnim('hit');
+    }
+    if (this.hitpoints <= 0) {
+      this.switchAnim('die');
+    }
   }
-
-  public update(dt: number) {}
 
   public switchAnim(name: string) {
     if (this.currentState !== name) {
@@ -30,9 +43,13 @@ export class Entity {
       let frameCount = this.animation.animations[this.currentState].frames.length / 8;
       if (this.frame + 1 === frameCount && this.currentState === 'die') {
 
-      } else  if (this.frame + 1 == frameCount && this.currentState == 'attack') {
+      } else if (this.frame + 1 == frameCount && this.currentState == 'attack') {
         this.switchAnim('idle');
-        this.frame = (this.frame + 1) % frameCount;
+        this.frame = 0;
+        this.lastFrameTime = now;
+      } else if (this.frame + 1 == frameCount && this.currentState == 'hit') {
+        this.switchAnim('idle');
+        this.frame = 0;
         this.lastFrameTime = now;
       } else {
         this.frame = (this.frame + 1) % frameCount;
@@ -42,8 +59,17 @@ export class Entity {
     this.animation.render(r, this.currentState, this.frame, this.direction, this.pos.x, this.pos.y);
   }
 
+  public renderHp(r: Renderer) {
+    let width = 50;
+    let healthPercent = this.hitpoints / this.maxHitpoints;
+    let healthWidth = width * healthPercent >= 0 ? width * healthPercent : 0;
+    r.rect('red', this.pos.x - (width / 2), this.pos.y - width, width, 6);
+    r.rect('green', this.pos.x - (width / 2), this.pos.y - 50, healthWidth, 6);
+  }
+
   public render(r: Renderer) {
     this.renderAnim(r);
+    this.renderHp(r);
   }
 }
 
@@ -107,11 +133,13 @@ export class Hero extends Entity {
     }
   }
 
-  public update(dt: number) {}
+  public update(dt: number) {
+    super.update(dt);
+  }
 
   public render(r: Renderer) {
     super.render(r);
-    // r.circle('purple', this.pos.x, this.pos.y, 2);
+    r.circle('#00FF00', this.pos.x, this.pos.y, 2);
     // for (let seg = 0; seg < 8; seg++) {
     //   this.segmentDivider(r, seg, this.pos.x, this.pos.y, 160, (seg * 45) + 90);
     // }
