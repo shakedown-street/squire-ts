@@ -11,6 +11,8 @@ import {
 import {
   Entity,
   Hero,
+  BlackKnightEntity,
+  HeavyArmorSwordShieldEntity,
 } from './';
 
 export class Diablo extends SquireGame {
@@ -31,10 +33,12 @@ class GameState extends State {
   public hero: Hero;
   public keys = new Keys();
   private frameSprite: any;
+  private entities: Entity[];
 
   constructor(gameCtx: any) {
     super(gameCtx);
-    this.hero = new Hero(new Point2d(400, 150));
+    // this.hero = new Hero(new Point2d(400, 300));
+    this.entities = [new HeavyArmorSwordShieldEntity(new Point2d(100, 0)), new BlackKnightEntity(new Point2d(700, 600))];
     this.gameCtx.canvas.addEventListener('mousemove', (canvasEvent: any) => {
       let offsetX, offsetY = 0;
       let element = this.gameCtx.canvas;
@@ -182,13 +186,19 @@ class GameState extends State {
 
   public render(r: Renderer) {
     this.renderUI(r);
-    this.hero.render(r);
+    // this.hero.render(r);
     // r.circle('black', this.mouse.x, this.mouse.y, 4);
+    this.entities.forEach((e) => {
+      e.render(r);
+    });
   }
 
   public update(dt: number) {
-    this.wasd();
-    this.hero.update(dt);
+    // this.wasd();
+    // this.hero.update(dt, this.entities);
+    this.entities.forEach((e) => {
+      e.update(dt, this.entities);
+    });
   }
 
   public end() {

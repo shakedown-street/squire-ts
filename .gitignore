@@ -1,4 +1,6 @@
 node_modules
 build
 **/*.psd
-sprite_data
+sprite_data.json
+**/*.pyc
+dump_**.json
