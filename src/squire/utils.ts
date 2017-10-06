@@ -30,3 +30,12 @@ export class Point3d {
   constructor(public x: number, public y: number, public z: number) {}
 
 }
+
+export class Random {
+
+  constructor() {}
+
+  public static between(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min)) + Math.floor(min);
+  }
+}

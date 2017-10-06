@@ -1,4 +1,4 @@
-import { AnimationDef, Point2d, Renderer } from './squire';
+import { AnimationDef, Point2d, Renderer, Random } from './squire';
 import { HeavyArmorSwordShield, BlackKnight } from './';
 
 export class Entity {
@@ -12,8 +12,12 @@ export class Entity {
   public target: Entity;
   public maxHitpoints = 100;
   public hitpoints = 100;
-  public damage = 10;
-  public speed = 50;
+  public attackRange = 96;
+  public accuracy = 0;
+  public armor = 0;
+  public maxDamage = 10;
+  public minDamageMultiplier = .7;
+  public walkSpeed = 50;
 
   constructor(public pos: Point2d) {}
 
@@ -32,11 +36,11 @@ export class Entity {
     }
     let dx = this.pos.x - this.target.pos.x;
     let dy = this.pos.y - this.target.pos.y;
-    if (Math.abs(dx) < 96 && Math.abs(dy) < 48) {
+    if (Math.abs(dx) < this.attackRange && Math.abs(dy) < (this.attackRange / 2)) {
       this.switchAnim('attack');
     } else {
       this.switchAnim('walk');
-      this.move(this.speed * dt, this.getDirection());
+      this.move(this.walkSpeed * dt, this.getDirection());
     }
   }
 
@@ -56,8 +60,7 @@ export class Entity {
       if (this.frame + 1 === frameCount && this.currentState === 'die') {
 
       } else if (this.frame + 1 == frameCount && this.currentState == 'attack') {
-        // this.switchAnim('idle');
-        this.dealDamage(Math.floor(Math.random() * this.damage) + Math.floor(this.damage * .75));
+        this.dealDamageToTarget();
         this.frame = (this.frame + 1) % frameCount;
         this.lastFrameTime = now;
       } else if (this.frame + 1 == frameCount && this.currentState == 'hit') {
@@ -69,7 +72,8 @@ export class Entity {
         this.lastFrameTime = now;
       }
     }
-    this.animation.render(r, this.currentState, this.frame, this.getDirection() === -1 ? 2 : this.getDirection(), this.pos.x, this.pos.y);
+    let direction = this.getDirection() === -1 ? 2 : this.getDirection()
+    this.animation.render(r, this.currentState, this.frame, direction, this.pos.x, this.pos.y);
   }
 
   public renderHp(r: Renderer) {
@@ -84,11 +88,22 @@ export class Entity {
     this.hitpoints -= damage;
     if (!this.isDead()) {
       this.switchAnim('hit');
+    } else {
+      this.switchAnim('die');
     }
   }
 
-  public dealDamage(damage: number) {
-    this.target.takeDamage(damage);
+  public dealDamageToTarget() {
+    let targetArmor = this.target.armor;
+    let armorEffect = targetArmor >= this.accuracy ? this.accuracy / targetArmor : targetArmor / this.accuracy;
+    let max = this.maxDamage * armorEffect;
+    let min = this.maxDamage * this.minDamageMultiplier * armorEffect;
+    let calcHit = Random.between(min, max);
+    console.log(targetArmor, armorEffect, max, min, calcHit);
+    this.target.takeDamage(calcHit);
+    if (this.target.isDead())  {
+      this.switchAnim('idle');
+    }
   }
 
   public isDead() {
@@ -240,19 +255,36 @@ export class Hero extends Entity {
   }
 }
 
+// Default Npc
+// public maxHitpoints = 100;
+// public hitpoints = 100;
+// public attackRange = 96;
+// public maxDamage = 10;
+// public minDamageMultiplier = .7;
+// public walkSpeed = 75;
 
 export class BlackKnightEntity extends Entity {
   public animation = new BlackKnight();
   public maxHitpoints = 2000;
   public hitpoints = 2000;
-  public damage = 120;
+  public attackRange = 160;
+  public accuracy = 275;
+  public maxDamage = 420;
+  public minDamageMultiplier = .6;
+  public walkSpeed = 50;
+  public armor = 350;
 }
 
 export class HeavyArmorSwordShieldEntity extends Entity {
   public animation = new HeavyArmorSwordShield();
-  public maxHitpoints = 1600;
-  public hitpoints = 1600;
-  public damage = 135;
+  public maxHitpoints = 2000;
+  public hitpoints = 2000;
+  public attackRange = 96;
+  public accuracy = 350;
+  public maxDamage = 335;
+  public minDamageMultiplier = .7;
+  public walkSpeed = 75;
+  public armor = 325;
 
   public getTarget(entities: Entity[]) {
     return entities[1];
