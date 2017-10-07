@@ -13,6 +13,7 @@ export class Entity {
   public maxHitpoints = 100;
   public hitpoints = 100;
   public attackRange = 96;
+  public attackSpeed = 1;
   public accuracy = 0;
   public armor = 0;
   public maxDamage = 10;
@@ -36,9 +37,12 @@ export class Entity {
     }
     let dx = this.pos.x - this.target.pos.x;
     let dy = this.pos.y - this.target.pos.y;
-    if (Math.abs(dx) < this.attackRange && Math.abs(dy) < (this.attackRange / 2)) {
+    let inRangeX = Math.abs(dx) < this.attackRange;
+    let inRangeY = Math.abs(dy) < (this.attackRange / 2);
+    let targetAlive = !this.target.isDead();
+    if (inRangeX && inRangeY && targetAlive) {
       this.switchAnim('attack');
-    } else {
+    } else if (!inRangeX || !inRangeY) {
       this.switchAnim('walk');
       this.move(this.walkSpeed * dt, this.getDirection());
     }
@@ -54,17 +58,16 @@ export class Entity {
   public renderAnim(r: Renderer) {
     let now = Date.now();
     let animationDuration = this.animation.animations[this.currentState].duration;
+    if (this.currentState === 'attack') {
+      animationDuration = this.attackSpeed >= 1 ? animationDuration / this.attackSpeed : animationDuration * this.attackSpeed;
+    }
     let needsNewFrame = now - this.lastFrameTime > animationDuration;
     if (needsNewFrame) {
       let frameCount = this.animation.animations[this.currentState].frames.length / 8;
-      if (this.frame + 1 === frameCount && this.currentState === 'die') {
+      if ((this.frame + 1) === frameCount && this.currentState === 'die') {
 
-      } else if (this.frame + 1 == frameCount && this.currentState == 'attack') {
+      } else if (this.frame === 8 && this.currentState === 'attack') {
         this.dealDamageToTarget();
-        this.frame = (this.frame + 1) % frameCount;
-        this.lastFrameTime = now;
-      } else if (this.frame + 1 == frameCount && this.currentState == 'hit') {
-        this.switchAnim('idle');
         this.frame = (this.frame + 1) % frameCount;
         this.lastFrameTime = now;
       } else {
@@ -86,9 +89,7 @@ export class Entity {
 
   public takeDamage(damage: number) {
     this.hitpoints -= damage;
-    if (!this.isDead()) {
-      this.switchAnim('hit');
-    } else {
+    if (this.isDead()) {
       this.switchAnim('die');
     }
   }
@@ -99,7 +100,6 @@ export class Entity {
     let max = this.maxDamage * armorEffect;
     let min = this.maxDamage * this.minDamageMultiplier * armorEffect;
     let calcHit = Random.between(min, max);
-    console.log(targetArmor, armorEffect, max, min, calcHit);
     this.target.takeDamage(calcHit);
     if (this.target.isDead())  {
       this.switchAnim('idle');
@@ -267,10 +267,11 @@ export class BlackKnightEntity extends Entity {
   public animation = new BlackKnight();
   public maxHitpoints = 2000;
   public hitpoints = 2000;
-  public attackRange = 160;
-  public accuracy = 275;
+  public attackRange = 128;
+  public attackSpeed = .8;
+  public accuracy = 435;
   public maxDamage = 420;
-  public minDamageMultiplier = .6;
+  public minDamageMultiplier = .75;
   public walkSpeed = 50;
   public armor = 350;
 }
@@ -280,11 +281,12 @@ export class HeavyArmorSwordShieldEntity extends Entity {
   public maxHitpoints = 2000;
   public hitpoints = 2000;
   public attackRange = 96;
-  public accuracy = 350;
-  public maxDamage = 335;
-  public minDamageMultiplier = .7;
+  public attackSpeed = 1.25;
+  public accuracy = 326;
+  public maxDamage = 315;
+  public minDamageMultiplier = .9;
   public walkSpeed = 75;
-  public armor = 325;
+  public armor = 315;
 
   public getTarget(entities: Entity[]) {
     return entities[1];

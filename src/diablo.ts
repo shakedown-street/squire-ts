@@ -34,11 +34,12 @@ class GameState extends State {
   public keys = new Keys();
   private frameSprite: any;
   private entities: Entity[];
+  private groundItems: any[];
 
   constructor(gameCtx: any) {
     super(gameCtx);
     // this.hero = new Hero(new Point2d(400, 300));
-    this.entities = [new HeavyArmorSwordShieldEntity(new Point2d(100, 0)), new BlackKnightEntity(new Point2d(700, 600))];
+    this.entities = [new HeavyArmorSwordShieldEntity(new Point2d(300, 200)), new BlackKnightEntity(new Point2d(500, 400))];
     this.gameCtx.canvas.addEventListener('mousemove', (canvasEvent: any) => {
       let offsetX, offsetY = 0;
       let element = this.gameCtx.canvas;
