@@ -10,6 +10,7 @@ export class Entity {
   private frame = 0;
 
   public target: Entity;
+  // TODO: Make accuracy/armor have a block chance rather than damage reduction
   public maxHitpoints = 100;
   public hitpoints = 100;
   public attackRange = 96;
@@ -59,7 +60,7 @@ export class Entity {
     let now = Date.now();
     let animationDuration = this.animation.animations[this.currentState].duration;
     if (this.currentState === 'attack') {
-      animationDuration = this.attackSpeed >= 1 ? animationDuration / this.attackSpeed : animationDuration * this.attackSpeed;
+      animationDuration = animationDuration / this.attackSpeed;
     }
     let needsNewFrame = now - this.lastFrameTime > animationDuration;
     if (needsNewFrame) {
@@ -259,6 +260,9 @@ export class Hero extends Entity {
 // public maxHitpoints = 100;
 // public hitpoints = 100;
 // public attackRange = 96;
+// public attackSpeed = 1;
+// public accuracy = 0;
+// public armor = 0;
 // public maxDamage = 10;
 // public minDamageMultiplier = .7;
 // public walkSpeed = 75;
@@ -268,12 +272,12 @@ export class BlackKnightEntity extends Entity {
   public maxHitpoints = 2000;
   public hitpoints = 2000;
   public attackRange = 128;
-  public attackSpeed = .8;
+  public attackSpeed = .75;
   public accuracy = 435;
-  public maxDamage = 420;
+  public armor = 350;
+  public maxDamage = 640;
   public minDamageMultiplier = .75;
   public walkSpeed = 50;
-  public armor = 350;
 }
 
 export class HeavyArmorSwordShieldEntity extends Entity {
@@ -283,10 +287,10 @@ export class HeavyArmorSwordShieldEntity extends Entity {
   public attackRange = 96;
   public attackSpeed = 1.25;
   public accuracy = 326;
+  public armor = 315;
   public maxDamage = 315;
   public minDamageMultiplier = .9;
   public walkSpeed = 75;
-  public armor = 315;
 
   public getTarget(entities: Entity[]) {
     return entities[1];
