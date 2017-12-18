@@ -1,5 +1,5 @@
 **/build
-**/dump_**.json
+**/dump_*.json
 **/*.pyc
 **/*.psd
 **/node_modules
