@@ -2,18 +2,16 @@
 
 A simple Typescript port of my Java game engine, Squire Framework
 
-# Run example
+## Setup client
+```bash
+cd client/
+yarn install
+npm start
+```
 
-First compile the typescript:
-
-`npm run compile`
-
-Next open `index.html` in your browser
-
-# Compile Typescript changes
-
-`npm run compile`
-
-# Watch Typescript changes
-
-`npm run watch`
+## Setup server
+```bash
+cd server/
+yarn install
+npm start
+```

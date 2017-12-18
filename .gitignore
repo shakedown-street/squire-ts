@@ -1,6 +1,7 @@
-node_modules
-build
-**/*.psd
-sprite_data.json
+**/build
+**/dump_**.json
 **/*.pyc
-dump_**.json
+**/*.psd
+**/node_modules
+**/package-lock.json
+**/yarn.lock

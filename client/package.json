@@ -1,0 +1,24 @@
+{
+  "name": "squire-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "desktop.js",
+  "scripts": {
+    "start": "npm run compile && electron . --debug",
+    "compile": "tsc & browserify build/diablo.js -o build/bundle.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/lodash": "^4.14.74",
+    "@types/node": "^8.5.1",
+    "browserify": "^14.4.0",
+    "electron": "^1.7.9",
+    "electron-json-storage": "^4.0.2",
+    "lodash": "^4.17.4",
+    "tsify": "^3.0.3",
+    "typescript": "^2.6.2",
+    "ws": "^3.2.0"
+  }
+}
