@@ -7,9 +7,7 @@ export class AnimationDef {
 
   constructor() {
     this.sheet = new Image();
-    this.sheet.onload = () => {
-      console.log('Image loaded: ' + this.getImageUrl());
-    };
+    this.sheet.onload = () => {};
     this.sheet.src = this.getImageUrl();
   }
 

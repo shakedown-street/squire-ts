@@ -45,4 +45,14 @@ export class Renderer {
     this.ctx.lineTo(x2, y2);
     this.ctx.stroke();
   }
+
+  public triangle(color: string, x: number, y: number, w: number, h: number) {
+    this.ctx.beginPath();
+    this.ctx.moveTo(x, y);
+    this.ctx.lineTo(x + w / 2, y + h);
+    this.ctx.lineTo(x - w / 2, y + h);
+    this.ctx.closePath();
+    this.ctx.fillStyle = color;
+    this.ctx.fill();
+  }
 }

@@ -23,10 +23,12 @@ export class Point2d {
   public right(px: number) {
     this.x += px;
   }
+}
 
-  public static angleBetween(pointA: Point2d, pointB: Point2d) {
-    return Math.atan2(pointB.y - pointA.y, pointB.x - pointA.x) * 180 / Math.PI;
-  }
+export class Point3d {
+
+  constructor(public x: number, public y: number, public z: number) {}
+
 }
 
 export class Random {
@@ -35,5 +37,14 @@ export class Random {
 
   public static between(min: number, max: number) {
     return Math.floor(Math.random() * (max - min)) + Math.floor(min);
+  }
+
+  public static string(characters: number) {
+    let text = '';
+    let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (let i = 0; i <= characters; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
   }
 }

@@ -3,11 +3,11 @@ import { HeavyArmorSwordShield, BlackKnight } from './';
 
 export abstract class Entity {
 
-  public animation: any;
+  public animation: AnimationDef;
   public currentState = 'idle';
-  public direction = 0;
+  // public direction = 0;
   protected lastFrameTime = 0;
-  protected frame = 0;
+  public frame = 0;
 
   // TODO: Make accuracy/armor have a block chance rather than damage reduction
   public maxHitpoints = 100;
@@ -23,7 +23,7 @@ export abstract class Entity {
   public target: any;
   public walkTo: Point2d;
 
-  constructor(public pos: Point2d) {}
+  constructor(public pos: Point2d) { }
 
   public isDead() {
     return this.hitpoints <= 0;
@@ -50,14 +50,14 @@ export abstract class Entity {
     let min = this.maxDamage * this.minDamageMultiplier * armorEffect;
     let calcHit = Random.between(min, max);
     this.target.takeDamage(calcHit);
-    if (this.target.isDead())  {
+    if (this.target.isDead()) {
       this.switchAnim('idle');
     }
   }
 
   public getDirection(): any {
     if (!this.walkTo) {
-      return 8;
+      return 0;
     }
     let dx = this.pos.x - this.walkTo.x;
     let dy = this.pos.y - this.walkTo.y;
@@ -89,28 +89,28 @@ export abstract class Entity {
       case 1:
         this.pos.down(px_diagonal);
         this.pos.left(px_diagonal);
-      break;
+        break;
       case 2:
         this.pos.left(px);
         break;
       case 3:
         this.pos.up(px_diagonal);
         this.pos.left(px_diagonal);
-      break;
+        break;
       case 4:
         this.pos.up(px);
         break;
       case 5:
         this.pos.up(px_diagonal);
         this.pos.right(px_diagonal);
-      break;
+        break;
       case 6:
         this.pos.right(px);
         break;
       case 7:
         this.pos.down(px_diagonal);
         this.pos.right(px_diagonal);
-      break;
+        break;
     }
   }
 
@@ -124,7 +124,7 @@ export abstract class Entity {
       x: x1 + length * Math.cos(angle),
       y: y1 + length * Math.sin(angle)
     }
-    r.line(x1, y1, to.x, to.y, 'black', 2);
+    r.line(x1, y1, to.x, to.y, 'black', 1);
     r.text('' + num, to.x, to.y);
   }
 
@@ -154,28 +154,32 @@ export abstract class Entity {
         this.lastFrameTime = now;
       }
     }
-    let direction = this.getDirection() === -1 ? 2 : this.getDirection()
-    this.animation.render(r, this.currentState, this.frame, direction, this.pos.x, this.pos.y);
+    this.animation.render(r, this.currentState, this.frame, this.getDirection(), this.pos.x, this.pos.y);
   }
 
   public renderHp(r: Renderer) {
     let width = 50;
     let healthPercent = this.hitpoints / this.maxHitpoints;
     let healthWidth = width * healthPercent >= 0 ? width * healthPercent : 0;
-    r.rect('red', this.pos.x - (width / 2), this.pos.y - width, width, 6);
-    r.rect('green', this.pos.x - (width / 2), this.pos.y - 50, healthWidth, 6);
+    r.rect('red', this.pos.x - (width / 2), this.pos.y - 80, width, 6);
+    r.rect('green', this.pos.x - (width / 2), this.pos.y - 80, healthWidth, 6);
   }
 
   public render(r: Renderer) {
     this.renderAnim(r);
-    // r.circle('blue', this.pos.x, this.pos.y, 5);
-    // r.circle('green', this.walkTo.x, this.walkTo.y, 5);
+    r.circle('blue', this.pos.x, this.pos.y, 5);
+    if (this.walkTo) {
+      r.circle('green', this.walkTo.x, this.walkTo.y, 5);
+    }
     if (!this.isDead()) {
       this.renderHp(r);
     }
   }
 
   public targetInRange() {
+    if (!this.target) {
+      return false;
+    }
     let targetDx = this.pos.x - this.target.pos.x;
     let targetDy = this.pos.y - this.target.pos.y;
     let targetWithinX = Math.abs(targetDx) < this.attackRange;
@@ -183,12 +187,15 @@ export abstract class Entity {
     return targetWithinX && targetWithinY;
   }
 
-  public walkToComplete() {
+  public isWalking() {
+    if (!this.walkTo) {
+      return false;
+    }
     let walkDx = this.pos.x - this.walkTo.x;
     let walkDy = this.pos.y - this.walkTo.y;
     let walkWithinX = Math.abs(walkDx) <= 10;
     let walkWithinY = Math.abs(walkDy) <= 10;
-    return walkWithinX && walkWithinY;
+    return !walkWithinX || !walkWithinY;
   }
 
   public update(dt: number, entities: Entity[]) {
@@ -199,9 +206,7 @@ export abstract class Entity {
     if (this.currentState === 'attack') {
       return;
     }
-    if (this.targetInRange() && !this.target.isDead()) {
-      this.switchAnim('attack');
-    } else if (this.walkTo && !this.walkToComplete()) {
+    if (this.isWalking()) {
       this.currentState = 'walk';
       this.move(this.walkSpeed * dt, this.getDirection());
     } else {

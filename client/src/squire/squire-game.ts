@@ -1,7 +1,6 @@
 import {
   Event,
   Dimension2d,
-  EventManager,
   Point2d,
   Renderer,
   StateManager,
@@ -31,7 +30,6 @@ export class SquireGame {
       this.run();
     });
     this.renderer.clear(0, 0, this.size.w, this.size.h);
-    this.renderer.rect('#567d46', 0, 0, this.size.w, this.size.h);
 
     let now = Date.now();
     let dt = (now - this.lastTickTime) / 1000;
