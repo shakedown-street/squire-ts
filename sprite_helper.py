@@ -1,13 +1,22 @@
 import sys
 import json
 
+
 def generate_frame_list(start_x, start_y, w, h, xOff, yOff, directions, frames):
     frames_list = []
     for y in range(directions):
         for x in range(frames):
-            frame = [x, y, start_x + (w * x), start_y + (h * y) + (1 * y), w, h, xOff, yOff]
+            frame = [
+                x, y, start_x + (w * x),
+                start_y + (h * y) + (1 * y),
+                w,
+                h,
+                xOff,
+                yOff
+            ]
             frames_list.append(frame)
     return frames_list
+
 
 def frame_list_to_str(frames_list):
     frames_str = []
@@ -15,8 +24,8 @@ def frame_list_to_str(frames_list):
         frames_str.append('\t\t\t\t{},\n'.format(f))
     return str(frames_str)
 
-# idle walk hit attack die
 
+# idle walk hit attack die
 heavy_armor_sword_shield = {
     "idle": {
         "duration": 100,

@@ -4,7 +4,7 @@ import { HeavyArmorItemAnim } from './heavy-armor-item.anim';
 
 export abstract class GroundItem {
 
-  public animation: AnimationDef;
+  public abstract animation: AnimationDef;
   protected lastFrameTime = 0;
   public frame = 0;
 

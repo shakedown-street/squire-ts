@@ -53,7 +53,7 @@ class GameState extends State {
   private frameSprite: any;
   private terrainSprite: any;
   private cursors: any;
-  private entities: Entity[];
+  private entities: Entity[] = [];
   private groundItems: GroundItem[] = [];
 
   private mouseDownEvent: any;
@@ -67,7 +67,7 @@ class GameState extends State {
     this.mouseMoveEvent = this.mouseMove.bind(this);
     this.connection = new Connection('ws://localhost:443');
     this.player = new Player(this.connection, new Point2d(400, 300));
-    this.entities = [];
+    this.entities.push(new BlackKnightEntity(new Point2d(200, 150)));
     this.gameCtx.canvas.addEventListener('mousemove', (canvasEvent: any) => {
       let offsetX, offsetY = 0;
       let element = this.gameCtx.canvas;
@@ -148,7 +148,6 @@ class GameState extends State {
     let clickX = e.clientX - offsetX;
     let clickY = e.clientY - offsetY;
     this.player.walkTo = new Point2d(clickX, clickY);
-    this.groundItems.push(new HeavyArmorGroundItem(new Point2d(clickX, clickY)));
   }
 
   public render(r: Renderer) {
@@ -173,7 +172,6 @@ class GameState extends State {
     this.player.update(dt, this.entities);
     this.entities.forEach((e) => {
       e.setTarget(this.player);
-      // e.walkTo = e.target.pos;
       e.update(dt, this.entities);
     });
   }

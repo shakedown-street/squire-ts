@@ -114,6 +114,28 @@ export abstract class Entity {
     }
   }
 
+  public targetInRange() {
+    if (!this.target) {
+      return false;
+    }
+    let targetDx = this.pos.x - this.target.pos.x;
+    let targetDy = this.pos.y - this.target.pos.y;
+    let targetWithinX = Math.abs(targetDx) < this.attackRange;
+    let targetWithinY = Math.abs(targetDy) < (this.attackRange / 2);
+    return targetWithinX && targetWithinY;
+  }
+
+  public isWalking() {
+    if (!this.walkTo) {
+      return false;
+    }
+    let walkDx = this.pos.x - this.walkTo.x;
+    let walkDy = this.pos.y - this.walkTo.y;
+    let walkWithinX = Math.abs(walkDx) <= 10;
+    let walkWithinY = Math.abs(walkDy) <= 10;
+    return !walkWithinX || !walkWithinY;
+  }
+
   private degreesToRadians(degrees: number) {
     return (degrees * Math.PI) / 180;
   }
@@ -176,37 +198,14 @@ export abstract class Entity {
     }
   }
 
-  public targetInRange() {
-    if (!this.target) {
-      return false;
-    }
-    let targetDx = this.pos.x - this.target.pos.x;
-    let targetDy = this.pos.y - this.target.pos.y;
-    let targetWithinX = Math.abs(targetDx) < this.attackRange;
-    let targetWithinY = Math.abs(targetDy) < (this.attackRange / 2);
-    return targetWithinX && targetWithinY;
-  }
-
-  public isWalking() {
-    if (!this.walkTo) {
-      return false;
-    }
-    let walkDx = this.pos.x - this.walkTo.x;
-    let walkDy = this.pos.y - this.walkTo.y;
-    let walkWithinX = Math.abs(walkDx) <= 10;
-    let walkWithinY = Math.abs(walkDy) <= 10;
-    return !walkWithinX || !walkWithinY;
-  }
-
   public update(dt: number, entities: Entity[]) {
     if (this.isDead()) {
       this.switchAnim('die');
       return;
     }
-    if (this.currentState === 'attack') {
-      return;
-    }
-    if (this.isWalking()) {
+    if (this.targetInRange()) {
+      this.currentState = 'attack';
+    } else if (this.isWalking()) {
       this.currentState = 'walk';
       this.move(this.walkSpeed * dt, this.getDirection());
     } else {
