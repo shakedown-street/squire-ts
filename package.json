@@ -5,7 +5,7 @@
   "main": "desktop.js",
   "scripts": {
     "start": "npm run compile && electron . --debug",
-    "compile": "tsc & browserify build/diablo.js -o build/bundle.js"
+    "compile": "tsc & browserify build/game.js -o build/bundle.js"
   },
   "author": "",
   "license": "ISC",
