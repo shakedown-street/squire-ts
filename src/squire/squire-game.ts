@@ -1,13 +1,6 @@
-import {
-  Event,
-  Dimension2d,
-  Point2d,
-  Renderer,
-  StateManager,
-} from './';
+import { Dimension2d, Point2d, Renderer, StateManager } from './';
 
 export class SquireGame {
-
   public size: Dimension2d;
   public center: Point2d;
   public stateManager: StateManager;

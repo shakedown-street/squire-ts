@@ -1,26 +1,28 @@
 {
-  "name": "squire-client",
-  "version": "1.0.0",
-  "description": "",
-  "main": "desktop.js",
+  "name": "squire-ts",
+  "version": "0.1.0",
+  "description": "A simple yet effective TypeScript canvas renderering engine",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
-    "start": "npm run compile && electron . --debug",
-    "compile": "tsc & browserify build/game.js -o build/bundle.js"
+    "build": "tsc",
+    "format": "prettier --write 'src/**/*.{ts,md}'",
+    "prepare": "npm run build"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com:shakedown-street/squire-ts.git"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "keywords": [],
+  "author": "shakedown-street (https://github.com/shakedown-street/)",
   "license": "ISC",
-  "dependencies": {
-    "@types/lodash": "^4.14.74",
-    "@types/node": "^8.5.1",
-    "@types/ws": "^4.0.0",
-    "browserify": "^14.4.0",
-    "bufferutil": "^3.0.3",
-    "electron": "^1.7.9",
-    "electron-json-storage": "^4.0.2",
-    "lodash": "^4.17.4",
-    "tsify": "^3.0.3",
-    "typescript": "^2.6.2",
-    "utf-8-validate": "^4.0.0",
-    "ws": "^3.2.1"
+  "bugs": "https://github.com/shakedown-street/squire-ts/issues",
+  "homepage": "https://github.com/shakedown-street/squire-ts#readme",
+  "devDependencies": {
+    "prettier": "^2.4.1",
+    "typescript": "^4.4.3"
   }
 }

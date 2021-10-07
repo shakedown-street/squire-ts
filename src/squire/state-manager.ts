@@ -1,16 +1,14 @@
 import { Renderer, State } from './';
-import { sortBy as _sortBy, reverse as _reverse } from 'lodash';
 
 export class StateManager {
-
   private _state: State;
 
   constructor() {}
 
   public update(dt: number): void {
     try {
-      this.state.update(dt);
-    } catch(e) {
+      this._state.update(dt);
+    } catch (e) {
       console.error(e);
     }
   }
@@ -18,7 +16,7 @@ export class StateManager {
   public render(r: Renderer): void {
     try {
       this._state.render(r);
-    } catch(e) {
+    } catch (e) {
       console.error(e);
     }
   }

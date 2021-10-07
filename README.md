@@ -1,3 +1,3 @@
-# Squire Framework Typescript Port
+# Squire Typescript
 
-A simple Typescript port of my Java game engine, Squire Framework
+A simple yet effective TypeScript canvas renderering engine

@@ -1,5 +1,4 @@
 export class Renderer {
-
   constructor(public ctx: any) {}
 
   public clear(x: number, y: number, w: number, h: number) {
@@ -24,8 +23,17 @@ export class Renderer {
     this.ctx.fillText(text, x, y);
   }
 
-  public image(image: any, sX: number, sY: number, sW: number, sH: number,
-               dX: number, dY: number, dW: number, dH: number) {
+  public image(
+    image: any,
+    sX: number,
+    sY: number,
+    sW: number,
+    sH: number,
+    dX: number,
+    dY: number,
+    dW: number,
+    dH: number
+  ) {
     this.ctx.drawImage(image, sX, sY, sW, sH, dX, dY, dW, dH);
   }
 
@@ -38,7 +46,7 @@ export class Renderer {
     this.ctx.stroke();
   }
 
-  public line(x1: number, y1: number, x2: number, y2: number,  color = 'black', lineWidth = 1) {
+  public line(x1: number, y1: number, x2: number, y2: number, color = 'black', lineWidth = 1) {
     this.ctx.beginPath();
     this.ctx.lineWidth = lineWidth;
     this.ctx.moveTo(x1, y1);

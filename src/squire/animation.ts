@@ -1,20 +1,20 @@
 import { Renderer } from './';
 
-export class AnimationDef {
-
+export class Animation {
   public animations: any = {};
   private sheet: any;
 
   constructor() {
     this.sheet = new Image();
-    this.sheet.onload = () => {};
     this.sheet.src = this.getImageUrl();
   }
 
-  public getImageUrl(): any { return undefined; }
+  public getImageUrl(): any {
+    return undefined;
+  }
 
   private getFrame(animationName: string, frameNumber: number, direction: number) {
-    let frames = this.animations[animationName]["frames"];
+    let frames = this.animations[animationName]['frames'];
     return frames.find((frame: any) => {
       return frame[0] === frameNumber && frame[1] === direction;
     });

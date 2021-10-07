@@ -1,7 +1,6 @@
-import { Event, Renderer, SquireGame } from './';
+import { Renderer } from './';
 
 export abstract class State {
-
   constructor(public gameCtx: any) {}
 
   public abstract init(): void;
@@ -11,5 +10,4 @@ export abstract class State {
   public abstract update(dt: number): void;
 
   public abstract end(): void;
-
 }
